@@ -99,17 +99,13 @@ class RegisterScreen extends StatelessWidget {
                       ],
                     ),
 
-                    MaterialButton(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                      ),
+                    ElevatedButton(
+
                       onPressed: () {
                         if (registerCubit.registerFormKey.currentState!.validate()) {
                           registerCubit.register();
                         }
                       },
-                      color: Colors.blue,
-                      minWidth: double.infinity,
                       child: state is RegisterLodingState
                           ? const CircularProgressIndicator(
                               color: Colors.white,

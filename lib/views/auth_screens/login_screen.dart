@@ -93,17 +93,12 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(
                       height: 5,
                     ),
-                    MaterialButton(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 15,
-                      ),
+                    ElevatedButton(
                       onPressed: () {
                         if (loginCubit.loginFormKey.currentState!.validate()) {
                           loginCubit.login();
                         }
                       },
-                      color: AppColores.primary,
-                      minWidth: double.infinity,
                       child: state is LoginLodingState
                           ? const CircularProgressIndicator(
                               color: Colors.white,

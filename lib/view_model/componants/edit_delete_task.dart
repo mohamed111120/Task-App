@@ -10,17 +10,29 @@ import '../cubit/task_cubit/task_cubit.dart';
 import 'custom_text.dart';
 import 'custom_text_form_field.dart';
 
-class EditDeleteTask extends StatelessWidget {
+class EditDeleteTask extends StatefulWidget {
   const EditDeleteTask({Key? key, required this.task}) : super(key: key);
 
   final Task task;
 
   @override
+  State<EditDeleteTask> createState() => _EditDeleteTaskState();
+}
+
+class _EditDeleteTaskState extends State<EditDeleteTask> {
+
+
+  @override
+  void initState() {
+    TaskCubit.get(context).titleController.text = widget.task.title ?? '';
+    TaskCubit.get(context).descriptionController.text = widget.task.description ?? '';
+    TaskCubit.get(context).startDateController.text = widget.task.startDate ?? '';
+    TaskCubit.get(context).endDateController.text = widget.task.endDate ?? '';
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
-    TaskCubit.get(context).titleController.text = task.title ?? '';
-    TaskCubit.get(context).descriptionController.text = task.description ?? '';
-    TaskCubit.get(context).startDateController.text = task.startDate ?? '';
-    TaskCubit.get(context).endDateController.text = task.endDate ?? '';
+
 
     return Padding(
         padding: EdgeInsets.only(
@@ -103,7 +115,7 @@ class EditDeleteTask extends StatelessWidget {
                   height: 15,
                 ),
                 DropdownButtonFormField(
-                  value: task.status,
+                  value: widget.task.status,
                   items: const [
                     DropdownMenuItem(
                       value: 'new',
@@ -174,9 +186,9 @@ class EditDeleteTask extends StatelessWidget {
                           print(
                               '-------------------------------------------------');
                           print(TaskCubit.get(context).image);
-                          print(task.image);
+                          print(widget.task.image);
                           return Visibility(
-                              visible: task.image == null &&
+                              visible: widget.task.image == null &&
                                   TaskCubit.get(context).image == null,
                               replacement: Visibility(
                                 visible: TaskCubit.get(context).image == null,
@@ -188,7 +200,7 @@ class EditDeleteTask extends StatelessWidget {
                                   height: 200,
                                 ),
                                 child: Image.network(
-                                  task.image ?? '',
+                                  widget.task.image ?? '',
                                   width: 200,
                                   height: 200,
                                   fit: BoxFit.cover,
@@ -238,7 +250,7 @@ class EditDeleteTask extends StatelessWidget {
                                   .globalKey
                                   .currentState!
                                   .validate()) {
-                                TaskCubit.get(context).editTask(task.id ?? 0);
+                                TaskCubit.get(context).editTask(widget.task.id ?? 0);
                               }
                             },
                             child: const TextCustom(
@@ -274,9 +286,12 @@ class EditDeleteTask extends StatelessWidget {
                                             BorderRadius.circular(10)),
                                     actions: [
                                       ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          fixedSize: Size(100, 40)
+                                        ),
                                           onPressed: () {
                                             BlocProvider.of<TaskCubit>(context)
-                                                .deleteTask(task.id!)
+                                                .deleteTask(widget.task.id!)
                                                 .then((value) {
                                               Navigator.pop(context);
                                               Navigator.pop(context);
@@ -286,6 +301,9 @@ class EditDeleteTask extends StatelessWidget {
                                             text: 'Yes',color: Colors.white,
                                           )),
                                       ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              fixedSize: Size(100, 40)
+                                          ),
                                           onPressed: () {
                                             Navigator.pop(context);
                                             Navigator.pop(context);

@@ -1,10 +1,12 @@
 import 'package:auth/models/task_model.dart';
+import 'package:auth/utils/app_help/app_colores.dart';
 import 'package:auth/view_model/componants/custom_floating_action_button.dart';
 import 'package:auth/view_model/componants/edit_delete_task.dart';
 import 'package:auth/view_model/componants/task_widget.dart';
 import 'package:auth/view_model/cubit/auth_cubit/authentication_cubit.dart';
 import 'package:auth/view_model/cubit/auth_cubit/authentication_state.dart';
 import 'package:auth/view_model/cubit/task_cubit/task_cubit.dart';
+import 'package:auth/view_model/cubit/theme_cubit/theme_cubit.dart';
 import 'package:auth/view_model/data/local/shared_helper.dart';
 import 'package:auth/view_model/data/local/shared_keys.dart';
 import 'package:auth/views/auth_screens/login_screen.dart';
@@ -34,17 +36,49 @@ class _TaskScreenState extends State<TaskScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            TextCustom(
-              text: '${SharedHelper.get(key: SharedKeys.userName)} Tasks',
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            BlocBuilder<ThemeCubit, ThemeState>(
+              builder: (context, state) {
+                return TextCustom(
+                  text: '${SharedHelper.get(key: SharedKeys.userName)} Tasks',
+                  color: ThemeCubit.get(context).isDark
+                      ? Colors.white
+                      : Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                );
+              },
             ),
             Spacer(),
+            BlocBuilder<ThemeCubit, ThemeState>(
+              builder: (context, state) => InkWell(
+                onTap: () {
+                  ThemeCubit.get(context).changeThemeMode();
+                },
+                child: ThemeCubit.get(context).isDark
+                    ? Icon(
+                        Icons.light_mode,
+                        color: Colors.white,
+                        size: 30,
+                      )
+                    : Icon(
+                        Icons.dark_mode,
+                        color: AppColores.primary,
+                        size: 30,
+                      ),
+              ),
+            ),
+            SizedBox(
+              width: 20,
+            ),
             BlocListener<AuthCubit, AuthStates>(
               listener: (context, state) {
-                if(state is LogOutSuccessState){
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(),), (route) => false);
+                if (state is LogOutSuccessState) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ),
+                      (route) => false);
                 }
               },
               child: InkWell(
@@ -61,8 +95,6 @@ class _TaskScreenState extends State<TaskScreen> {
           ],
         ),
         centerTitle: true,
-
-
       ),
       body: BlocConsumer<TaskCubit, TaskStates>(
         listener: (context, state) {
@@ -72,7 +104,7 @@ class _TaskScreenState extends State<TaskScreen> {
                 MaterialPageRoute(
                   builder: (context) => const LoginScreen(),
                 ),
-                    (route) => false);
+                (route) => false);
           }
 
           if (state is EditTaskSucssesState) {
